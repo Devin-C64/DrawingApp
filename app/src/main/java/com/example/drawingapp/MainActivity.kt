@@ -1,10 +1,7 @@
 package com.example.drawingapp
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.graphics.Color
 import android.widget.Button
 import android.widget.SeekBar
@@ -23,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         val drawView = findViewById<DrawView>(R.id.drawView)
         Log.d("MainActivity", "DrawView: $drawView")
         val brushSizeSeekBar = findViewById<SeekBar>(R.id.brushsizeseekBar)
+        val opacitySeekBar = findViewById<SeekBar>(R.id.opacityseekBar)
         val colorButton = findViewById<Button>(R.id.colorbutton)
         val clearButton = findViewById<Button>(R.id.clearbutton)
 
@@ -31,6 +29,15 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 drawView.setBrushSize(progress.toFloat())
             }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
+        opacitySeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                drawView.setBrushOpacity(progress)
+            }
+
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })

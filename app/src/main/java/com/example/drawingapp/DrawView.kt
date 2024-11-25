@@ -18,11 +18,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var brushColor: Int = Color.BLACK  // Current brush color
     private var brushSize: Float = 5f  // Current brush size
 
+    private var currentOpacity = 255
+
     init {
         paint.color = brushColor
         paint.strokeWidth = brushSize
         paint.style = Paint.Style.STROKE
         paint.isAntiAlias = true
+        paint.alpha = currentOpacity
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -32,12 +35,14 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         for (stroke in strokes) {
             paint.color = stroke.color
             paint.strokeWidth = stroke.strokeWidth
+            paint.alpha = stroke.opacity
             canvas.drawPath(stroke.path, paint)
         }
 
         // Draw the current path
         paint.color = brushColor
         paint.strokeWidth = brushSize
+        paint.alpha = currentOpacity
         canvas.drawPath(currentPath, paint)
     }
 
@@ -56,7 +61,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             }
             MotionEvent.ACTION_UP -> {
                 // When the user lifts their finger, save the current path as a stroke
-                strokes.add(Stroke(Path(currentPath), brushColor, brushSize))
+                strokes.add(Stroke(Path(currentPath), brushColor, brushSize, currentOpacity))
                 currentPath.reset()
             }
         }
@@ -74,6 +79,12 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         brushSize = size
     }
 
+    fun setBrushOpacity(opacity: Int) {
+        currentOpacity = opacity
+        paint.alpha = opacity
+        invalidate()
+    }
+
     // Clear the canvas
     fun clearCanvas() {
         strokes.clear()
@@ -86,5 +97,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 data class Stroke(
     val path: Path,
     val color: Int,
-    val strokeWidth: Float
+    val strokeWidth: Float,
+    val opacity: Int
 )

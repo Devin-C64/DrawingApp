@@ -8,12 +8,16 @@
     tools:context=".MainActivity">
 
     <!-- DrawView for the drawing canvas -->
+
+    <!-- TextView with centered "Hello World!" text -->
+
     <com.example.drawingapp.DrawView
         android:id="@+id/drawView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-44dp" />
 
-    <!-- TextView with centered "Hello World!" text -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,41 +28,75 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- SeekBar for controlling brush size -->
-    <SeekBar
-        android:id="@+id/brushsizeseekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/colorbutton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Color Button to change color -->
+
+    <!-- SeekBar for controlling opacity -->
+    <SeekBar
+        android:id="@+id/brushsizeseekBar"
+        android:layout_width="192dp"
+        android:layout_height="19dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/colorbutton" />
+
     <Button
         android:id="@+id/colorbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Color"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- SeekBar for controlling opacity -->
-    <SeekBar
-        android:id="@+id/opacityseekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/brushsizeseekBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Clear Button to reset the canvas -->
+
+    <SeekBar
+        android:id="@+id/opacityseekBar"
+        android:layout_width="188dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.983"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:max="255"
+        android:progress="255" />
+
     <Button
         android:id="@+id/clearbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Clear"
-        app:layout_constraintTop_toBottomOf="@id/opacityseekBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/brushSizeLabel"
+        android:layout_width="92dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="68dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Brush Size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/opacityLabel"
+        android:layout_width="68dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="288dp"
+        android:layout_marginTop="68dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Opacity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
