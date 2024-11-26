@@ -10,19 +10,54 @@ import android.widget.GridView
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.util.Log
-
+import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.Manifest
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var backgroundImageView: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        backgroundImageView = findViewById(R.id.backgroundImageView)
         val drawView = findViewById<DrawView>(R.id.drawView)
         Log.d("MainActivity", "DrawView: $drawView")
         val brushSizeSeekBar = findViewById<SeekBar>(R.id.brushsizeseekBar)
         val opacitySeekBar = findViewById<SeekBar>(R.id.opacityseekBar)
         val colorButton = findViewById<Button>(R.id.colorbutton)
         val clearButton = findViewById<Button>(R.id.clearbutton)
+
+        val uploadButton: Button = findViewById(R.id.uploadButton)  // Ensure this button is in your layout
+        uploadButton.setOnClickListener {
+            openFileChooser()
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission granted, allow file picking
+            uploadButton.setOnClickListener {
+                openFileChooser()
+            }
+        } else {
+            // Request permission if not granted
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                1
+            )
+        }
 
         // Brush size control
         brushSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -86,5 +121,22 @@ class MainActivity : AppCompatActivity() {
 
             return imageView
         }
+    }
+    private val pickImageLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data?.data != null) {
+                val imageUri: Uri? = result.data?.data
+                try {
+                    val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
+                    backgroundImageView.setImageBitmap(bitmap)
+                    backgroundImageView.visibility = View.VISIBLE
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    private fun openFileChooser() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickImageLauncher.launch(intent)  // Launch image picker using the registered launcher
     }
 }
