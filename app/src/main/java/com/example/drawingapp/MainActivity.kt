@@ -20,6 +20,11 @@ import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.Manifest
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Canvas
+import android.graphics.Paint
 
 class MainActivity : AppCompatActivity() {
     private lateinit var backgroundImageView: ImageView
@@ -39,6 +44,19 @@ class MainActivity : AppCompatActivity() {
         val uploadButton: Button = findViewById(R.id.uploadButton)  // Ensure this button is in your layout
         uploadButton.setOnClickListener {
             openFileChooser()
+        }
+
+        val applyFilterButton: Button = findViewById(R.id.applyFilterButton)
+        applyFilterButton.setOnClickListener {
+            // Check if the drawable in ImageView is a BitmapDrawable
+            val drawable = backgroundImageView.drawable
+            if (drawable is BitmapDrawable) {
+                val bitmap = drawable.bitmap
+                val filteredBitmap = applyGrayscaleFilter(bitmap)
+
+                // Set the filtered bitmap back to the ImageView
+                backgroundImageView.setImageBitmap(filteredBitmap)
+            }
         }
 
         if (ContextCompat.checkSelfPermission(
@@ -138,5 +156,24 @@ class MainActivity : AppCompatActivity() {
     private fun openFileChooser() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageLauncher.launch(intent)  // Launch image picker using the registered launcher
+    }
+    private fun applyGrayscaleFilter(bitmap: Bitmap): Bitmap {
+        // Create a ColorMatrix for grayscale effect
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(0f)  // Set saturation to 0 for grayscale
+
+        // Create a ColorMatrixColorFilter with the color matrix
+        val colorFilter = ColorMatrixColorFilter(colorMatrix)
+
+        // Create a new bitmap to apply the filter
+        val filteredBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)  // Make sure to specify a non-null Bitmap.Config
+
+        // Create a canvas and apply the filter
+        val canvas = Canvas(filteredBitmap)
+        val paint = Paint()
+        paint.colorFilter = colorFilter
+        canvas.drawBitmap(bitmap, 0f, 0f, paint)
+
+        return filteredBitmap
     }
 }
